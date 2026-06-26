@@ -2,9 +2,9 @@
 
 **Author:** Dominick Trolian
 **Destination repo:** `nicky2tymze/estimated-to-measured`
-**Status:** PRE-REGISTRATION. Frozen and committed before receipt of the collaborator's injection set.
-**Collaborator:** Kartik Raghavan (supplies the spec-defect grammar and per-tier catch predictions).
-**Date committed:** _set at commit; the commit timestamp and hash are the registration record._
+**Status:** PRE-REGISTRATION. Section 9 co-signed and frozen 2026-06-26, before receipt of the collaborator's injection set.
+**Collaborator:** Kartik Raghavan (supplies the spec-defect grammar and per-tier catch predictions). Section 9 co-signed 2026-06-26.
+**Date committed:** the commit timestamp and hash are the registration record.
 
 ---
 
@@ -41,8 +41,8 @@ This program previously measured two and three and stated plainly that it did no
 
 **Measurement:** for each review configuration, the fraction of injected spec defects whose detection criterion is satisfied by that configuration's review output. This is denominator one.
 
-**Review depth tiers** (from the collaborator's ladder; final names fixed at terminology sign-off, Section 9):
-bare prompt, scope-only, comprehensive, specialist-passes-plus-synthesis, multi-model.
+**Review depth tiers** (locked at co-sign, Section 9):
+bare-prompt, scope-only directed, comprehensive directed (with failure-mode list), specialist-passes + synthesis, multi-model.
 
 The collaborator supplies a predicted catch per tier for each injected defect. Those predictions are hypotheses under test. They are not used in scoring. See Section 3.
 
@@ -67,7 +67,7 @@ The intervention claim is that richer review configurations lift catch rate abov
 
 **Definition.** The weak-implementer metric is the denominator-one catch rate of a single designated baseline review configuration, run alone, against the injected spec-defect set, computed as the fraction of injected defects whose detection criterion it satisfies, sampled over K independent review generations (Section 5) and reported as the mean across those generations.
 
-**Designated baseline configuration:** the bare-prompt tier on the designated weak reviewer model. The specific model and the exact bare-prompt text are fixed at terminology sign-off (Section 9) and frozen there, before the injection set is received.
+**Designated baseline configuration (locked at co-sign):** the bare-prompt tier on Haiku 4.5, using the literal bare prompt `Review this spec.` The floor is held on the same model as the bottom of the ladder so that bare-prompt → comprehensive is a clean within-model structure delta. A smaller open model (7-8B) bare-prompt was considered and declined as the pre-registered baseline: a different, weaker model family at the floor conflates model capability with review structure, so the lift over floor would no longer measure structure alone. Such a floor may be run only as a separate, clearly-labeled exploratory baseline, never as the pre-registered weak-implementer metric.
 
 **Frozen choices:**
 - The baseline is the bare-prompt tier. It is not re-selected after seeing results, and it is not redefined as whichever configuration happens to score lowest.
@@ -112,14 +112,16 @@ This is the analog, on denominator one, of the implementer floor reported elsewh
 
 ---
 
-## 9. Open items to settle at terminology sign-off (before receipt)
+## 9. Co-signed and frozen 2026-06-26 (before receipt)
 
-These are agreed with the collaborator and frozen into this document before the injection set is received. Until they are filled, the pre-registration is not closed.
+These four items were the open terminology decisions. They are co-signed by both parties and frozen here before the injection set is received. The pre-registration is now closed.
 
-- Final names and definitions of the review depth tiers (Section 2).
-- The designated weak reviewer model and the exact bare-prompt text (Section 4).
-- The size of the injected set (the thread anchored on roughly 30 injections).
-- The format of a detection criterion, so criteria are authored consistently across the set (Section 3).
+- **Review depth tiers (Section 2):** bare-prompt / scope-only directed / comprehensive directed (with failure-mode list) / specialist-passes + synthesis / multi-model.
+- **Designated weak reviewer (Section 4):** Haiku 4.5 on the literal bare prompt `Review this spec.` Open-model (7-8B) floor declined as the pre-registered baseline (capability/structure confound); permitted only as a labeled exploratory secondary.
+- **Set size (Section 6 / 7):** 40 injected spec defects, across six grammar categories (~7 per category), inside the stated 30-to-50 range.
+- **Detection-criterion format (Section 3):** one declarative literal-match statement per defect — `[review output must] {name / identify / flag} {specific object} {as missing / wrong / unenforceable / contradicting}`.
+
+Recorded for the science: the open-model floor was the collaborator's proposal and was declined for the reason in Section 4. A follow-on (not v1) is review-structure across reviewer strength (Haiku vs Sonnet vs Opus up the ladder), to test whether the weaker reviewer takes the larger structure lift.
 
 ---
 
