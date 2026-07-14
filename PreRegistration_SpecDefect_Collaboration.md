@@ -133,3 +133,86 @@ Recorded for the science: the open-model floor was the collaborator's proposal a
 - **Weak-implementer metric:** the frozen baseline denominator-one catch rate, bare-prompt tier on the designated weak reviewer, over K at least 40.
 - **K:** number of independent review generations sampled per configuration, at least 40.
 - **Denominator one / two / three:** review catch against injected spec defects / probe completeness against implementation mutants / independent-build divergence as spec-hole detector.
+
+---
+
+## Amendment 1 — 2026-07-14. Host selection; denominator reduced 40 → 33.
+
+Recorded per Section 6: a deviation from the co-signed set size, made before any scored
+run, reported in the result rather than absorbed into it.
+
+### Host
+
+The injection host is the **finance core of LifeZones**, an application the rig operator
+built and maintains: six tables, six foreign keys, a four-state transaction lifecycle
+(`projected → scheduled → sent → posted`), a reconciliation workflow, a mistake log with
+three operator origins, and a set of pace/runway metrics. Twenty-six passing tests.
+
+The clean baseline spec (`FINANCE_SPEC.md`) is **extracted from the working
+implementation**, not written alongside it. Its cleanliness is therefore checkable rather
+than asserted: `d1/spec_check.py` pulls the `CREATE TABLE` statements from the source and
+verifies that every foreign key the spec declares resolves, and that no foreign key in the
+code is absent from the spec. The clean baseline passes. The mutant is required to fail it
+at every structural defect planted. This supplies an objective ground truth for the schema
+category that depends on neither party's judgement.
+
+### Exclusions
+
+Seven of the forty grammar entries are excluded. **The resulting denominator is 33.**
+
+**Excluded — host lacks the required structure (4).** These specify an external identity
+provider, sessions, roles, or cohort-anchoring timestamps. LifeZones is a single-operator
+application with no users, no sessions, no roles, and no auth provider. They could only be
+injected by inventing a spec section describing nothing that exists, which would destroy
+the recompute property that makes the baseline trustworthy.
+
+| entry | reason |
+|---|---|
+| G-016 | requires syncing an auth provider on identity change (`supabase.auth.admin.updateUserById`) |
+| G-017 | requires session revocation (`supabase.auth.admin.signOut`) |
+| G-018 | requires a UNIQUE constraint on a binding to `auth.users` |
+| G-036 | requires ≥2 lifecycle timestamps that could each plausibly anchor a cohort |
+
+**Excluded — forcible but off-spirit (3).** Injectable only by distorting the host. Per the
+collaborator: *"'forcible but off-spirit' produces a measurement I can't interpret cleanly.
+If G-006's catch rate is 'sometimes' on a host that has no email column, I don't know what
+that number means."*
+
+| entry | reason |
+|---|---|
+| G-006 | case-sensitivity on an email/username column; the host has neither |
+| G-023 | read auditing; presupposes a multi-user read surface |
+| G-024 | list-view exposure; presupposes a multi-user read surface |
+
+### Consequences
+
+- **The denominator is 33.** Catch rates are computed over the 33 entries that ran.
+- **The seven are not counted as misses.** The four hard-excluded entries are reported as
+  **"not ported"** — a finding in their own right about the grammar's cross-host generality.
+- **The sealed predictions are untouched** and will be scored only over the 33 that ran.
+- **The paired-surface design survives the reduction.** Neither pair (G-002/G-022,
+  G-007/G-025) is in the excluded set.
+- **The mutant spec and the matcher patterns are disclosed to the collaborator for audit
+  before the run**, per Section 7. The rig operator authored both; drift between a matcher
+  and its detection criterion is resolved before any K=40 spend.
+
+### The finding that produced this amendment
+
+Several v0.2.1 entries are written against a **specific Supabase-backed recruiting
+application**, not against a domain. The identifiers are inside the injection rules:
+`auth.users`, `prospects`, `profiles`, `Master Recruiter`, `Coordinator`,
+`supabase.auth.admin.updateUserById`. The collaborator had documented the Postgres/Supabase
+*engine* specificity but not the *domain* specificity, and records that as an oversight.
+
+**The portability of a spec-defect grammar across hosts is a claim, and it has not been
+measured. This run is the first measurement of it.** On one real, non-toy, non-ATS host, 4
+of 40 entries did not port at all and 3 more ported only weakly.
+
+Both parties record, before the result is known, that this number is itself a finding: if
+the non-port fraction stays high across future hosts, the grammar earns "domain checklist";
+if it stays low, portability holds. **Either outcome is publishable.** It is a v0.3 input
+either way — the stated direction being to re-abstract identifiers to placeholders, keep
+the defect classes, and let host-specific naming be a substitution the operator applies.
+
+**Agreed:** collaborator (Kartik Raghavan), 2026-07-14 — *"Run at 33. Amendment logged."*
+Rig operator (Dominick Trolian), 2026-07-14.
